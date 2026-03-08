@@ -37,32 +37,6 @@ if not HANDLE:
 HANDLE = HANDLE.lstrip("@")
 
 
-def clipboard(text):
-    """try to copy to clipboard, dont care if it fails"""
-    try:
-        import pyperclip
-        pyperclip.copy(text)
-        return True
-    except:
-        pass
-    try:
-        if sys.platform == "darwin":
-            subprocess.run(["pbcopy"], input=text.encode(), check=True)
-            return True
-        elif sys.platform.startswith("linux"):
-            for cmd in [["xclip", "-selection", "clipboard"], ["xsel", "--clipboard", "--input"], ["wl-copy"]]:
-                try:
-                    subprocess.run(cmd, input=text.encode(), check=True)
-                    return True
-                except FileNotFoundError:
-                    continue
-        elif sys.platform == "win32":
-            subprocess.run(["clip"], input=text.encode(), check=True)
-            return True
-    except:
-        pass
-    return False
-
 
 def resolve_did(handle):
     """turn a handle into a DID"""
@@ -118,9 +92,6 @@ def on_message(ws, message):
     print(f"  {text[:200]}{'...' if len(text) > 200 else ''}")
     print(f"  {url}")
     print(f"{'='*60}")
-
-    if clipboard(url):
-        print(f"  copied to clipboard")
     print()
 
 
